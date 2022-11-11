@@ -1,12 +1,10 @@
-from discord import *
+import discord
+import discord.ext as discordext
+from discord.ext import commands
+import commands as com
+from GLOBAL import *
 import os
 
-client = Client(intents=Intents.default())
+com.bot.run(os.getenv("TOKEN"))
 
-@client.event
-def on_message(message):
-   pass
-
-
-client.run(os.getenv("TOKEN"))
 
