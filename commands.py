@@ -2,6 +2,7 @@ import pycord
 import discord
 import report as rep
 import data_management
+import statistics
 import discord.ext as discordext
 from GLOBAL import *
 import os
@@ -9,11 +10,6 @@ import json
 
 
 bot = discordext.commands.Bot(command_prefix=PREFIX, intents=discord.Intents.all())
-
-
-@bot.command(name='whereami', help='print the current server name/id')
-async def whereami(ctx):
-    await ctx.send(f'{ctx.author.name}, you are currently in {ctx.guild.name} ({ctx.guild.id}). {ctx.channel}')
 
 
 @bot.command(name="report")
@@ -27,6 +23,13 @@ async def newcampaign(ctx):
     campaign_name = str(ctx.message.content).replace("c!newcampaign", "").lstrip()
     await data_management.add_campaign(ctx, campaign_name)
 
+@bot.command(name="stats")
+async def stats(ctx):
+    campaign_name = str(ctx.message.content).replace("c!stats", "").lstrip()
+    await statistics.showstats(ctx, campaign_name)
+
+
+
 
 @bot.event
 async def on_message(message):
@@ -34,7 +37,7 @@ async def on_message(message):
 
     if ctx.author.bot:
         return
-
+#this below is connected with wins/loses/draws seqence - I should do separate method for it... yea maybe some day
     if str(ctx.guild.id) in rep.current_servers.keys():
         if str(ctx.message.channel) in rep.current_servers[str(ctx.guild.id)].keys():
             if rep.current_servers[str(ctx.guild.id)][str(ctx.channel)]["mode"] != "start":
@@ -42,6 +45,7 @@ async def on_message(message):
                     await rep.sequence(ctx, int(message.content))
                 else:
                     await ctx.channel.send(f"Wrong input! Type a number!")
+                    rep.current_servers[str(ctx.guild.id)][str(ctx.channel)]['delete'] += 2
 
     await bot.process_commands(message)
 

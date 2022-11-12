@@ -3,19 +3,22 @@ import discord
 import json
 import datetime
 
+
 def check_existence(ctx: discordext.commands.Context, name: str):
     name = name.lower()
+
     with open("campaigns.json", "r") as data_file:
         data = dict(json.load(data_file))
 
     if str(ctx.guild.id) not in data.keys():
         add_server_to_keys(ctx)
         return False
+
     elif name not in data[str(ctx.guild.id)].keys():
         return False
+
     else:
         return True
-
 
 
 def add_server_to_keys(ctx: discordext.commands.Context):
@@ -24,7 +27,7 @@ def add_server_to_keys(ctx: discordext.commands.Context):
 
     data[ctx.guild.id] = {}
     with open("campaigns.json", "w") as data_file:
-        json.dump(data, data_file)
+        json.dump(data, data_file, indent=4)
 
 
 async def add_report(ctx: discordext.commands.Context, report):
@@ -42,7 +45,7 @@ async def add_report(ctx: discordext.commands.Context, report):
     )
 
     with open("campaigns.json", "w") as data_file:
-        json.dump(data, data_file)
+        json.dump(data, data_file, indent=4)
 
 
 async def add_campaign(ctx: discordext.commands.Context, name: str):
@@ -54,7 +57,7 @@ async def add_campaign(ctx: discordext.commands.Context, name: str):
         data[str(ctx.guild.id)][name] = []
 
         with open("campaigns.json", "w") as data_file:
-            json.dump(data, data_file)
+            json.dump(data, data_file, indent=4)
         await ctx.channel.send(f"Successfully created new camapign {name}!")
     else:
         await ctx.channel.send(f"Campaign with name {name} alredy exist!")
