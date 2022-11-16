@@ -7,7 +7,7 @@ import discord
 async def showstats(ctx: discordext.commands.Context, name):
     with open("campaigns.json", "r") as data_file:
         data = dict(json.load(data_file))
-    data = data[str(ctx.guild.id)][name]
+    data = data[str(ctx.guild.id)][name]['data']
 
     stats = {}
     for record in data:

@@ -30,14 +30,14 @@ def add_server_to_keys(ctx: discordext.commands.Context):
         json.dump(data, data_file, indent=4)
 
 
-async def add_report(ctx: discordext.commands.Context, report):
+async def add_report(ctx: discordext.commands.Context, report: dict):
     name = report['name'].lower()
     date = str(datetime.date.today())
 
     with open("campaigns.json", "r") as data_file:
         data = dict(json.load(data_file))
 
-    data[str(ctx.guild.id)][name.lower()].append(
+    data[str(ctx.guild.id)][name.lower()]['data'].append(
         {"wins": report['wins'],
          "loses": report['loses'],
          "draws": report['draws'],
@@ -54,7 +54,11 @@ async def add_campaign(ctx: discordext.commands.Context, name: str):
         with open("campaigns.json", "r") as data_file:
             data = dict(json.load(data_file))
 
-        data[str(ctx.guild.id)][name] = []
+        data[str(ctx.guild.id)][name] = {
+                                         "author": ctx.message.author.id,
+                                         "permissions": [ctx.message.author.id],
+                                         "data": []
+                                        }
 
         with open("campaigns.json", "w") as data_file:
             json.dump(data, data_file, indent=4)

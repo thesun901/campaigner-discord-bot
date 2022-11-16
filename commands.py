@@ -1,4 +1,3 @@
-import pycord
 import discord
 import report as rep
 import data_management
