@@ -1,7 +1,7 @@
 import discord
 import report as rep
 import data_management
-import statistics
+import statistics as stat
 import discord.ext as discordext
 from GLOBAL import *
 import os
@@ -25,7 +25,7 @@ async def newcampaign(ctx):
 @bot.command(name="stats")
 async def stats(ctx):
     campaign_name = str(ctx.message.content).replace("c!stats", "").lstrip()
-    await statistics.showstats(ctx, campaign_name)
+    await stat.stats(ctx, campaign_name)
 
 
 
@@ -36,16 +36,15 @@ async def on_message(message):
 
     if ctx.author.bot:
         return
-#this below is connected with wins/loses/draws seqence - I should do separate method for it... yea maybe some day
+
     if str(ctx.guild.id) in rep.current_servers.keys():
-        if str(ctx.message.channel) in rep.current_servers[str(ctx.guild.id)].keys():
-            if rep.current_servers[str(ctx.guild.id)][str(ctx.channel)]["mode"] != "start":
-                if ctx.message.content.isdigit() and not ctx.author.bot:
-                    await rep.sequence(ctx, int(message.content))
-                else:
-                    await ctx.channel.send(f"Wrong input! Type a number!")
-                    rep.current_servers[str(ctx.guild.id)][str(ctx.channel)]['delete'] += 2
+        await rep.check_sequence(ctx)
+
+    if str(ctx.guild.id) in stat.current_servers.keys():
+        await stat.check_sequence(ctx)
 
     await bot.process_commands(message)
+
+
 
 
